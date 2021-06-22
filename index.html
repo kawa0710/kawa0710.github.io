@@ -47,7 +47,7 @@
                         <v-btn-toggle rounded
                                       mandatory
                                       color="red">
-                            <v-btn v-bind="adj_size" v-for="size in item.size" :value="size">
+                            <v-btn v-bind="adj_size" v-for="size in item.size" :value="size" style="min-width: 0">
                                 <span class="font-weight-black">{{ size }}</span>
                             </v-btn>
                         </v-btn-toggle>
@@ -130,7 +130,7 @@
                     let sizeStr = {};
                     switch (this.item.size.length) {
                         case 4:
-                            sizeStr = { 'x-small': true };
+                            sizeStr = { 'small': true };
                             break;
                     }
                     return sizeStr;
