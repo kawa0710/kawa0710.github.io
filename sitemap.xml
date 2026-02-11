@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://kawa0710.github.io/Is-it-time-to-use-Linux-in-2026/</loc>
+    
+    <lastmod>2026-02-11</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://kawa0710.github.io/PikaOS-niri-TW/</loc>
     
     <lastmod>2026-02-11</lastmod>
@@ -67,6 +76,27 @@
   
   <url>
     <loc>https://kawa0710.github.io/tags/Fcitx5/</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/Linux/</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/Windows-11/</loc>
+    <lastmod>2026-02-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/%E6%94%BE%E6%A3%84-Windows/</loc>
     <lastmod>2026-02-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
