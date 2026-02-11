@@ -1,0 +1,686 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kawa">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[更新：2025-12-31 12:33:00] 安裝 PikaOS + Niri PikaOS 的 ISO 以 rEFInd 啟動，以 VM 安裝時要選 UEFI 啟動![VMWare UEFI](images&#x2F;PikaOS-Niri-TW&#x2F;VMWare UEFI.png)參考：Hyper-V UEFI  安裝過程可以在 youtube 找到英文及在 bilibili 找到中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安裝 PikaOS + Niri 以及中文輸入法 Fcitx5">
+<meta property="og:url" content="https://kawa0710.github.io/PikaOS-niri-TW/index.html">
+<meta property="og:site_name" content="卡哇🐸哇哇叫">
+<meta property="og:description" content="[更新：2025-12-31 12:33:00] 安裝 PikaOS + Niri PikaOS 的 ISO 以 rEFInd 啟動，以 VM 安裝時要選 UEFI 啟動![VMWare UEFI](images&#x2F;PikaOS-Niri-TW&#x2F;VMWare UEFI.png)參考：Hyper-V UEFI  安裝過程可以在 youtube 找到英文及在 bilibili 找到中">
+<meta property="og:locale" content="zh_TW">
+<meta property="og:image" content="https://kawa0710.github.io/images/PikaOS-Niri-TW/fcitx_tw.png">
+<meta property="og:image" content="https://kawa0710.github.io/images/PikaOS-Niri-TW/fcitx_cn.png">
+<meta property="og:image" content="https://kawa0710.github.io/images/PikaOS-Niri-TW/fcitx_hk.png">
+<meta property="article:published_time" content="2025-12-25T07:56:00.000Z">
+<meta property="article:modified_time" content="2026-02-11T03:26:23.123Z">
+<meta property="article:author" content="Kawa">
+<meta property="article:tag" content="Fcitx5">
+<meta property="article:tag" content="Niri">
+<meta property="article:tag" content="PikaOS">
+<meta property="article:tag" content="中文輸入法">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kawa0710.github.io/images/PikaOS-Niri-TW/fcitx_tw.png">
+  
+  
+  
+  <title>安裝 PikaOS + Niri 以及中文輸入法 Fcitx5 - 卡哇🐸哇哇叫</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"kawa0710.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>卡哇</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>歸檔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分類</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>標籤</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="安裝 PikaOS + Niri 以及中文輸入法 Fcitx5"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-12-25 15:56" pubdate>
+          2025年12月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分鐘
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">安裝 PikaOS + Niri 以及中文輸入法 Fcitx5</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[更新：2025-12-31 12:33:00]</p>
+<h1 id="安裝-PikaOS-Niri"><a href="#安裝-PikaOS-Niri" class="headerlink" title="安裝 PikaOS + Niri"></a>安裝 PikaOS + Niri</h1><ul>
+<li><p><code>PikaOS 的 ISO 以 rEFInd 啟動</code>，以 VM 安裝時要選 UEFI 啟動<br>![VMWare UEFI](images&#x2F;PikaOS-Niri-TW&#x2F;VMWare UEFI.png)<br><a target="_blank" rel="noopener" href="https://blog.vnet.tw/hyper-v-%E4%BD%BF%E7%94%A8uefi-%E6%A8%A1%E5%BC%8F%E5%AE%89%E8%A3%9D-ubuntu/">參考：Hyper-V UEFI</a></p>
+</li>
+<li><p>安裝過程可以在 youtube 找到英文及在 bilibili 找到中文語音的安裝過程。數量不多，因為 PikaOS 真的是比較小眾的 distro。</p>
+</li>
+</ul>
+<h1 id="安裝-中文輸入法-fcitx5"><a href="#安裝-中文輸入法-fcitx5" class="headerlink" title="安裝 中文輸入法 fcitx5"></a>安裝 中文輸入法 fcitx5</h1><h2 id="安裝-fcitx5"><a href="#安裝-fcitx5" class="headerlink" title="安裝 fcitx5"></a>安裝 fcitx5</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pikman i fcitx5 fcitx5-config-qt im-config<br></code></pre></td></tr></table></figure>
+<p>（不建議從 Flatpak 裝，因為 run 在沙盒裡可能不能在非 Flatpak 的 App 使用，而且 Rime 相關的套件可能找不到或裝不起來）</p>
+<h2 id="fcitx5-輸入法"><a href="#fcitx5-輸入法" class="headerlink" title="fcitx5 輸入法"></a>fcitx5 輸入法</h2><p><a target="_blank" rel="noopener" href="https://chakra-zh.blogspot.com/2015/10/">參考 - Chakra@中文</a></p>
+<ul>
+<li>fcitx5-chewing 新酷音</li>
+<li>fcitx5-table-extra 臺繁中、簡中、港繁中使用的各種輸入法<ul>
+<li>臺灣繁中輸入法有：倉頡（快速倉頡第六代、倉頡大字集、倉頡第三代、倉頡第五代、速成第五代）、嘸蝦米、行列30、行列30大字集、吳語註音法</li>
+</ul>
+</li>
+<li>fcitx5-chinese-addons 正簡體轉換功能</li>
+<li>fcitx5-rime 中州韻輸入法</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">pikman i fcitx5-chewing<br>pikman i fcitx5-table-extra<br>pikman i fcitx5-chinese-addons<br>pikman i fcitx5-rime<br></code></pre></td></tr></table></figure>
+
+<p><img src="/images/PikaOS-Niri-TW/fcitx_tw.png" srcset="/img/loading.gif" lazyload alt="fcitx5 臺繁中"><br><img src="/images/PikaOS-Niri-TW/fcitx_cn.png" srcset="/img/loading.gif" lazyload alt="fcitx5 簡中"><br><img src="/images/PikaOS-Niri-TW/fcitx_hk.png" srcset="/img/loading.gif" lazyload alt="fcitx5 港繁中"></p>
+<h2 id="重啟動"><a href="#重啟動" class="headerlink" title="重啟動"></a>重啟動</h2><h2 id="不能用中文打字-APP（2025-12-31、2026-01-21、02-11-更新）"><a href="#不能用中文打字-APP（2025-12-31、2026-01-21、02-11-更新）" class="headerlink" title="不能用中文打字 APP（2025&#x2F;12&#x2F;31、2026&#x2F;01&#x2F;21、02&#x2F;11 更新）"></a>不能用中文打字 APP（2025&#x2F;12&#x2F;31、2026&#x2F;01&#x2F;21、02&#x2F;11 更新）</h2><p>目前已知有：</p>
+<ul>
+<li>Super + D 打開的 pikabar-luncher （2026&#x2F;02&#x2F;11 確認已解決）<ul>
+<li>解決方法：編輯 &#x2F;ect&#x2F;environment，加入「XMODIFIERS&#x3D;@im&#x3D;fcitx」</li>
+<li>重啟 PikaOS。</li>
+</ul>
+</li>
+<li>Pika Software Manager 確認無法使用中文輸入法<ul>
+<li>它其實是 COSMIC Store，現在 COSMIC 專用的 App 皆不支援輸入法</li>
+<li>可能要等 2026 下半年 COSMIC 才有更新</li>
+</ul>
+</li>
+</ul>
+<h1 id="心得"><a href="#心得" class="headerlink" title="心得"></a>心得</h1><p>相比 Arch Linux、CachyOS，能輕鬆安裝好 Niri 的 PikaOS 就很值得一用，不僅 UI 漂亮操作也流暢。</p>
+<p>雖然商店不能打中文但並不影響日常甚至是工作的使用。PikaOS 主打「玩遊戲的體驗」，單機遊戲一定是沒問題，就是不曉得要連網互動的遊戲能不能使用中文輸入法…目前還沒有測試過。</p>
+<p>近期準備用 PikaOS + Niri 開發 Web 前、後端實際體會一段時間，看看是否適合長期使用。</p>
+<p>（2026&#x2F;01&#x2F;21、02&#x2F;11 更新心得）使用了 PikaOS + Niri 超過 10 個工作日，主要集中在：RustDesk（遠端連Windows，只安裝 Niri 的 PikaOS 不能被控制）、Ksnip(截圖)、Windsurf、Faltpak 安裝的 Bottles+Line&#x2F;Discord&#x2F;OnlyOffice&#x2F;Draw.io&#x2F;Trayscale(Tailscale GUI)&#x2F;dbeaver 等…在 3 個螢幕文書作業、畫 API&#x2F;UI 文件線稿、製作 Markdown 文件等工作及Zen Browser 收發信&#x2F;上網&#x2F;查資料&#x2F;看PDF&#x2F;串流影音，PikaOS 本身是穩定的，更不用說 Niri 操作視窗的流暢了。（最近工作內容都在規劃、分析類，除了開資料庫修改 SQL 完全沒有 Coding）</p>
+<p>為了解決 pikabar-luncher 不能使用中文輸入法的問題，查到了 Niri 的版本，以及用了較早版本 noctalia shell 客製成 pika shell；我使用 CachyOS + Niri 的時間雖然比在 PikaOS + Niri 多，但 PikaOS + Niri 預設的快速鍵、客製的 shell、自帶的剪貼簿歷史還是比 CachyOS + Niri 順手多，幾乎沒改過快速鍵及裝其他套件。</p>
+<p>但是在 CachyOS 頻繁收到 noctalia shell 的更新，noctalia shell 進化得很快，有新功能也有更精緻的 UI，暫時我還會留在 CachyOS + Niri 嘗試新的 noctalia shell。</p>
+<p>（2026&#x2F;02&#x2F;11 更新心得）我的筆電有 Nvidia 3050 mobile，PikaOS 安裝過程沒有遇到任何問題，就只有 Winboat 啟動速度比 CachyOS 慢很多 - 從 Menu 滑鼠點圖示到 GUI 出現要超過 20 秒，但啟動後操作 Windows 的 Line、Visual Studio 等 App 速度與 CachyOS 相同。</p>
+<p>Faltpak 安裝的 Bottles+Line 比 CachyOS 穩定，但 CachyOS 最近在 2 月的更新之後已經可以從 AUR 安裝 Bottles，而且 Line 執行速度快穩定性更好，使用了 2 天雙開 Line 沒有閃退，除了在 Niri 的老問題：偶爾 Line 視窗會消失，必須用小圖示登出後再登入。 </p>
+<p>我全部的工作流程都可以在 PikaOS + Niri 上完成，可以有 100% 的信心說 PikaOS + Niri 絕對是個可以用於日常工作的 Linux Distro。如果一定要能遠端操控的話，Niri 目前的版本還不能做到，但也許可以在 PikaOS 裝 GNome 或 KDE，只要裝的起來遠端操控功能一定可以使用，因為我在 CachyOS 是使用 XFCE 桌面 + Niri 並安裝了 Xorg Server，CachyOS 登出後就可以讓 Windows 的遠端工具連線操作或讓 RustDesk 連線。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/PikaOS/" class="print-no-link">#PikaOS</a>
+      
+        <a href="/tags/Niri/" class="print-no-link">#Niri</a>
+      
+        <a href="/tags/%E4%B8%AD%E6%96%87%E8%BC%B8%E5%85%A5%E6%B3%95/" class="print-no-link">#中文輸入法</a>
+      
+        <a href="/tags/Fcitx5/" class="print-no-link">#Fcitx5</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>安裝 PikaOS + Niri 以及中文輸入法 Fcitx5</div>
+      <div>https://kawa0710.github.io/PikaOS-niri-TW/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Kawa</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2025年12月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/rofi-addIMESupport-atCachyOS/" title="編譯 rofi 使其支援中文輸入法@CachyOS">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">編譯 rofi 使其支援中文輸入法@CachyOS</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>
