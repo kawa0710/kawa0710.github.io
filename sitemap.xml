@@ -56,6 +56,34 @@
 
   
   <url>
+    <loc>https://kawa0710.github.io/tags/Linux/</loc>
+    <lastmod>2026-04-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/Windows-11/</loc>
+    <lastmod>2026-04-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/%E6%94%BE%E6%A3%84-Windows/</loc>
+    <lastmod>2026-04-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/CachyOS-niri-rofi-%E4%B8%AD%E6%96%87-%E8%BC%B8%E5%85%A5%E6%B3%95-seatd-%E9%8D%B5%E7%9B%A4%E6%BB%91%E9%BC%A0%E4%B8%8D%E8%83%BD%E7%94%A8/</loc>
+    <lastmod>2026-04-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://kawa0710.github.io/tags/PikaOS/</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -84,27 +112,6 @@
   </url>
   
   <url>
-    <loc>https://kawa0710.github.io/tags/Linux/</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://kawa0710.github.io/tags/Windows-11/</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://kawa0710.github.io/tags/%E6%94%BE%E6%A3%84-Windows/</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://kawa0710.github.io/tags/Arch-Linux/</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -126,21 +133,14 @@
   </url>
   
   <url>
-    <loc>https://kawa0710.github.io/tags/%E4%B8%AD%E5%B7%9E%E9%9F%B5/</loc>
+    <loc>https://kawa0710.github.io/tags/%E4%B8%AD%E5%B7%9E%E9%9F%BB/</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://kawa0710.github.io/tags/%E8%BE%93%E5%85%A5%E6%B3%95/</loc>
-    <lastmod>2026-04-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://kawa0710.github.io/tags/CachyOS-niri-rofi-%E4%B8%AD%E6%96%87-%E8%BC%B8%E5%85%A5%E6%B3%95-seatd-%E9%8D%B5%E7%9B%A4%E6%BB%91%E9%BC%A0%E4%B8%8D%E8%83%BD%E7%94%A8/</loc>
+    <loc>https://kawa0710.github.io/tags/%E8%BC%B8%E5%85%A5%E6%B3%95/</loc>
     <lastmod>2026-04-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
