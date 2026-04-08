@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>Rime 輸入法崩潰了（2026-04-07）</title>
+    <link href="/Rime-is-broken-260407/"/>
+    <url>/Rime-is-broken-260407/</url>
+    
+    <content type="html"><![CDATA[<p>最近一次更新後，Rime 輸入法不能正常使用。<br>執行指令</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">fcitx5 --verbose=5<br></code></pre></td></tr></table></figure><p>查到了錯誤訊息：</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">Failed to load library for addon rime on &quot;/usr/lib/fcitx5/librime.so&quot;. Error: /usr/lib/librime.so.1: undefined symbol: _ZTIN6marisa9ExceptionE<br></code></pre></td></tr></table></figure><p>，據此 google 到了相關的<a href="https://discuss.cachyos.org/t/bug-librime-in-cachyos-extra-v3-repository-symbol-lookup-error-due-to-marisa-library-update/27331">解決方案</a>－ 「<strong>裝 extra 庫的 librime</strong>」：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> pacman -S extra/librime<br></code></pre></td></tr></table></figure><p>或</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">paru -S extra/librime<br></code></pre></td></tr></table></figure><p>；完成後，Rime 輸入法恢復正常。</p><p>原因出自 cachyos-extra-v4&#x2F;librime 的版本，不知道是太新，還是官方 Build 時有問題…</p><hr><p>這是使用 CachyOS 半年來，第一次遇到「滾動式」更新直接弄壞現有功能，不過好在我還有裝 fcitx5 的倉頡輸入法備用，實際上也沒多大影響，每日工作用 CachyOS 對我來說還是挺穩定的。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Linux</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Arch Linux</tag>
+      
+      <tag>CachyOS</tag>
+      
+      <tag>Rime</tag>
+      
+      <tag>中州韵</tag>
+      
+      <tag>输入法</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>是時候使用 Linux 了嗎？（2026-02）</title>
     <link href="/Is-it-time-to-use-Linux-in-2026/"/>
     <url>/Is-it-time-to-use-Linux-in-2026/</url>

@@ -1,3 +1,4 @@
+https://kawa0710.github.io/Rime-is-broken-260407/
 https://kawa0710.github.io/Is-it-time-to-use-Linux-in-2026/
 https://kawa0710.github.io/PikaOS-niri-TW/
 https://kawa0710.github.io/rofi-addIMESupport-atCachyOS/
@@ -11,4 +12,9 @@ https://kawa0710.github.io/tags/Fcitx5/
 https://kawa0710.github.io/tags/Linux/
 https://kawa0710.github.io/tags/Windows-11/
 https://kawa0710.github.io/tags/%E6%94%BE%E6%A3%84-Windows/
+https://kawa0710.github.io/tags/Arch-Linux/
+https://kawa0710.github.io/tags/CachyOS/
+https://kawa0710.github.io/tags/Rime/
+https://kawa0710.github.io/tags/%E4%B8%AD%E5%B7%9E%E9%9F%B5/
+https://kawa0710.github.io/tags/%E8%BE%93%E5%85%A5%E6%B3%95/
 https://kawa0710.github.io/categories/Linux/
