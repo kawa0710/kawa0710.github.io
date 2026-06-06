@@ -122,6 +122,13 @@
   </url>
   
   <url>
+    <loc>https://kawa0710.github.io/tags/systemd/</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://kawa0710.github.io/tags/CachyOS/</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
@@ -143,7 +150,7 @@
   </url>
   
   <url>
-    <loc>https://kawa0710.github.io/tags/%E8%87%AA%E5%8B%95%E6%AA%A2%E6%9F%A5%E5%A5%97%E4%BB%B6%E6%9B%B4%E6%96%B0%E6%95%B8%E9%87%8F/</loc>
+    <loc>https://kawa0710.github.io/tags/%E8%87%AA%E5%8B%95%E6%AA%A2%E6%9F%A5%E5%A5%97%E4%BB%B6%E5%8F%AF%E6%9B%B4%E6%96%B0%E6%95%B8%E9%87%8F/</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -178,7 +185,14 @@
   </url>
   
   <url>
-    <loc>https://kawa0710.github.io/tags/systemd/</loc>
+    <loc>https://kawa0710.github.io/tags/Windows-11/</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://kawa0710.github.io/tags/%E6%94%BE%E6%A3%84-Windows/</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -200,20 +214,6 @@
   
   <url>
     <loc>https://kawa0710.github.io/tags/%E6%A8%A1%E7%B3%8A/</loc>
-    <lastmod>2026-06-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://kawa0710.github.io/tags/Windows-11/</loc>
-    <lastmod>2026-06-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://kawa0710.github.io/tags/%E6%94%BE%E6%A3%84-Windows/</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
