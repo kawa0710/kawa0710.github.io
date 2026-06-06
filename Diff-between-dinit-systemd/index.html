@@ -1,0 +1,761 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-TW" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Kawa">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="[更新：2026-06-05 12:43:00] ctl 指令 systemctl dinitctl  設計哲學差異 (Design Philosophy)： systemd 是「全能型」的服務管理器（包含日誌管理、網路配置、硬體識別等），包山包海，能包全包。 dinit 追求的是「Unix 風格（Do one thing and do it well）」，它只專注於處理服務啟動與依賴關係，所以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="dinit 與 systemd 的不同">
+<meta property="og:url" content="https://kawa0710.github.io/Diff-between-dinit-systemd/index.html">
+<meta property="og:site_name" content="卡哇🐸哇哇叫">
+<meta property="og:description" content="[更新：2026-06-05 12:43:00] ctl 指令 systemctl dinitctl  設計哲學差異 (Design Philosophy)： systemd 是「全能型」的服務管理器（包含日誌管理、網路配置、硬體識別等），包山包海，能包全包。 dinit 追求的是「Unix 風格（Do one thing and do it well）」，它只專注於處理服務啟動與依賴關係，所以">
+<meta property="og:locale" content="zh_TW">
+<meta property="article:published_time" content="2026-06-05T04:43:00.000Z">
+<meta property="article:modified_time" content="2026-06-06T09:21:48.061Z">
+<meta property="article:author" content="Kawa">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="dinit">
+<meta property="article:tag" content="systemd">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>dinit 與 systemd 的不同 - 卡哇🐸哇哇叫</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"kawa0710.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>卡哇</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首頁</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>歸檔</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分類</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>標籤</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.webp') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="dinit 與 systemd 的不同"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-06-05 12:43" pubdate>
+          2026年6月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          880 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分鐘
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">dinit 與 systemd 的不同</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>[更新：2026-06-05 12:43:00]</p>
+<h2 id="ctl-指令"><a href="#ctl-指令" class="headerlink" title="ctl 指令"></a>ctl 指令</h2><ul>
+<li>systemctl</li>
+<li>dinitctl</li>
+</ul>
+<h2 id="設計哲學差異-Design-Philosophy-："><a href="#設計哲學差異-Design-Philosophy-：" class="headerlink" title="設計哲學差異 (Design Philosophy)："></a>設計哲學差異 (Design Philosophy)：</h2><ul>
+<li>systemd 是「全能型」的服務管理器（包含日誌管理、網路配置、硬體識別等），包山包海，能包全包。</li>
+<li>dinit 追求的是「Unix 風格（Do one thing and do it well）」，它只專注於處理服務啟動與依賴關係，所以 dinit 啟動速度更快、資源佔用極低。</li>
+</ul>
+<h2 id="dinit-服務描述檔本身不支援直接宣告變數，如果執行要用到變數，要用以下寫法："><a href="#dinit-服務描述檔本身不支援直接宣告變數，如果執行要用到變數，要用以下寫法：" class="headerlink" title="dinit 服務描述檔本身不支援直接宣告變數，如果執行要用到變數，要用以下寫法："></a>dinit 服務描述檔本身不支援直接宣告變數，如果執行要用到變數，要用以下寫法：</h2><figure class="highlight plaintext"><figcaption><span>service description</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dinit">command = /bin/sh -c &quot;export 鍵值=變數 &amp;&amp; export 鍵值=變數 &amp;&amp; exec 執行檔&quot;<br></code></pre></td></tr></table></figure>
+
+<h2 id="如果安裝的套件沒有為-dinit-設計，服務要自己寫描述檔"><a href="#如果安裝的套件沒有為-dinit-設計，服務要自己寫描述檔" class="headerlink" title="如果安裝的套件沒有為 dinit 設計，服務要自己寫描述檔"></a>如果安裝的套件沒有為 dinit 設計，服務要自己寫描述檔</h2><p>以 input remapper 為例（我用它來對應沒有 Linux 驅動的 SlimBlade Trackball 及 ELECOM HUGE 按鍵）</p>
+<ul>
+<li>執行路徑在 &#x2F;usr&#x2F;bin&#x2F;input-remapper-service</li>
+<li>在 &#x2F;etc&#x2F;dint.d&#x2F; 建立服務描述檔「input-remapper」</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ls</span> /etc/dinit.d/input-remapper<br>-rw-r--r-- 1 root root 117 Jun  4 14:19 /etc/dinit.d/input-remapper<br></code></pre></td></tr></table></figure>
+<ul>
+<li>內容如下：</li>
+</ul>
+<figure class="highlight plaintext"><figcaption><span>service description</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dinit"># description = input-remapper service<br>command = /usr/bin/input-remapper-service<br>type = process<br>depends-on = lightdm<br>restart = true<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>我不會在 tty 使用滑鼠故讓它在 lightdm 後啟動；當然若沒有 lightdm 就要自行替換</p>
+</blockquote>
+<ul>
+<li>更多撰寫可用的內容參考：<a target="_blank" rel="noopener" href="https://davmac.org/projects/dinit/man-pages-html/dinit-service.5.html#SERVICE_PROPERTIES">dinit SERVICE_PROPERTIES</a></li>
+<li>服務開機啟動用和 systemd 相似的 <code>dinitctl enable input-remapper</code>，或手動建軟連結到 boot.d 目錄下</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">ln</span> -s ../input-remapper /etc/dinit.d/boot.d/input-remapper<br></code></pre></td></tr></table></figure>
+
+<h2 id="dinit-系統層級服務放在-etc-dinit-d-個人服務放在-config-dinit-d"><a href="#dinit-系統層級服務放在-etc-dinit-d-個人服務放在-config-dinit-d" class="headerlink" title="dinit 系統層級服務放在 &#x2F;etc&#x2F;dinit.d, 個人服務放在 ~&#x2F;.config&#x2F;dinit.d"></a>dinit 系統層級服務放在 &#x2F;etc&#x2F;dinit.d, 個人服務放在 ~&#x2F;.config&#x2F;dinit.d</h2><p>Artix 我安裝在個人筆電，因此服務不分系統或個人，全部放在 &#x2F;etc&#x2F;dinit.d</p>
+<h2 id="systemd-與-dinit-相似的指令"><a href="#systemd-與-dinit-相似的指令" class="headerlink" title="systemd 與 dinit 相似的指令"></a>systemd 與 dinit 相似的指令</h2><table>
+<thead>
+<tr>
+<th align="left">功能描述</th>
+<th align="left">systemd 指令</th>
+<th align="left">dinit 指令</th>
+<th align="left">備註 &#x2F; 行為差異</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>立即啟動服務</strong></td>
+<td align="left"><code>systemctl start &lt;service&gt;</code></td>
+<td align="left"><code>dinitctl start &lt;service&gt;</code></td>
+<td align="left">如果指令失敗就要手動建立服務檔到 &#x2F;etc&#x2F;dinit.d</td>
+</tr>
+<tr>
+<td align="left"><strong>立即停止服務</strong></td>
+<td align="left"><code>systemctl stop &lt;service&gt;</code></td>
+<td align="left"><code>dinitctl stop &lt;service&gt;</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>重啟服務</strong></td>
+<td align="left"><code>systemctl restart &lt;service&gt;</code></td>
+<td align="left"><code>dinitctl restart &lt;service&gt;</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>查看服務狀態</strong></td>
+<td align="left"><code>systemctl status &lt;service&gt;</code></td>
+<td align="left"><code>dinitctl status &lt;service&gt;</code></td>
+<td align="left">dinit 沒有內建日誌故看不到日誌</td>
+</tr>
+<tr>
+<td align="left"><strong>啟用開機自啟</strong></td>
+<td align="left"><code>systemctl enable &lt;service&gt;</code></td>
+<td align="left"><code>dinitctl enable &lt;service&gt;</code></td>
+<td align="left">如果指令失敗就要手動建立服務檔到 &#x2F;etc&#x2F;dinit.d 及 &#x2F;etc&#x2F;dinit.d&#x2F;boot.d</td>
+</tr>
+<tr>
+<td align="left"><strong>停用開機自啟</strong></td>
+<td align="left"><code>systemctl disable &lt;service&gt;</code></td>
+<td align="left"><code>dinitctl disable &lt;service&gt;</code></td>
+<td align="left"></td>
+</tr>
+<tr>
+<td align="left"><strong>列出所有載入服務</strong></td>
+<td align="left"><code>systemctl list-units --type=service</code></td>
+<td align="left"><code>dinitctl list</code></td>
+<td align="left">dinit 會用標誌如 <code>[{+}]</code>（已啟動）、<code>[{-}]</code>（已停止）顯示，比較直覺。</td>
+</tr>
+<tr>
+<td align="left"><strong>關機與重啟系統</strong></td>
+<td align="left"><code>systemctl poweroff</code> &#x2F; <code>reboot</code></td>
+<td align="left"><code>dinitctl shutdown</code></td>
+<td align="left"></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="dinit-與-systemd-不同的功能"><a href="#dinit-與-systemd-不同的功能" class="headerlink" title="dinit 與 systemd 不同的功能"></a>dinit 與 systemd 不同的功能</h2><p>systemd 是一個龐大且包山包海的「系統生態系」，而 dinit 僅專注於「Process 與相依性管理」，所以用 systemd 習以為常的「魔法」，在 dinit 要用的話就要找替代方案。</p>
+<table>
+<thead>
+<tr>
+<th align="left">systemd 獨有功能 &#x2F; 指令</th>
+<th align="left">功能描述</th>
+<th align="left">dinit 的替代方案與核心哲學差異</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong><code>journalctl -u &lt;service&gt;</code></strong></td>
+<td align="left">查看特定服務的系統日誌</td>
+<td align="left"><strong>dinit 沒有內建日誌系統。</strong> 你必須在服務描述檔中宣告 <code>logfile = /path/to/log</code> 導向檔案，或搭配 <code>socklog</code>、<code>s6-log</code> 等輕量化 syslog 服務。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>systemctl daemon-reload</code></strong></td>
+<td align="left">重新載入設定檔變更</td>
+<td align="left">dinit 採用動態按需讀取（On-demand）。修改描述檔後再次執行 <code>start</code>&#x2F;<code>restart</code> 時它會自動偵測變更並彈出警告；也可以用 <code>dinitctl reload &lt;service&gt;</code> 手動強制重載。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>systemctl mask &lt;service&gt;</code></strong></td>
+<td align="left">強制鎖定服務防止被拉起</td>
+<td align="left"><strong>dinit 沒有 mask 核心指令。</strong> 標準作法是直接刪除、改名描述檔，或在自訂目錄建立一個同名但指向 <code>/dev/null</code> 的符號連結，直接讓 dinit 載入失敗。</td>
+</tr>
+<tr>
+<td align="left"><strong><code>systemctl list-dependencies</code></strong></td>
+<td align="left">以樹狀圖列出服務相依性</td>
+<td align="left">執行 <code>suo dinit-check</code> 看系統服務啟動鏈<strong>列表</strong>，<code>dinit-check</code>看個人服務。</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/systemd/" class="print-no-link">#systemd</a>
+      
+        <a href="/tags/dinit/" class="print-no-link">#dinit</a>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>dinit 與 systemd 的不同</div>
+      <div>https://kawa0710.github.io/Diff-between-dinit-systemd/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Kawa</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>發布於</div>
+          <div>2026年6月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>許可協議</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/Flatpak-onlyoffice-error-wayland/" title="flatpak 安裝的 onlyoffice 打不開">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">flatpak 安裝的 onlyoffice 打不開</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/Artix-dinit-Boot-10-Secs/" title="Artix Linux + dinit 開機只要10秒！">
+                        <span class="hidden-mobile">Artix Linux + dinit 開機只要10秒！</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目錄</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜尋</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">關鍵字</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允許 JavaScript 運行的環境下瀏覽效果更佳</div>
+  </noscript>
+</body>
+</html>
