@@ -19,15 +19,15 @@
   <meta name="author" content="Kawa">
   <meta name="keywords" content="">
   
-    <meta name="description" content="[更新：2026-06-05 11:31:48] 雖然我的工作筆電 RAM 有 32G，但平常工作要開發網頁系統前、後端，必開瀏覽器、2 個 Antigravity IDE、LibreOffice 以及常駐通訊軟體 Discord、Bottle + LINE，隨便就能吃超過 16G。 這裡面最恐怖的是瀏覽器，根本吃 RAM 怪獸…不管 Zen Browser 還是 Helium，開啟來後慢慢的從">
+    <meta name="description" content="[更新：2026-06-08 17:57:55]  我把 &#x2F;home 也放到 BTRFS subvolume，所以…swap.img 造成建 snapshot 出錯…點我跳到解決方法  雖然我的工作筆電 RAM 有 32G，但平常工作要開發網頁系統前、後端，必開瀏覽器、2 個 Antigravity IDE、LibreOffice 以及常駐通訊軟體 Discord、Bottle + LI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="BTRFS 啟用 zswap 及休眠">
 <meta property="og:url" content="https://kawa0710.github.io/BTRFS-create-swap-file/index.html">
 <meta property="og:site_name" content="卡哇🐸哇哇叫">
-<meta property="og:description" content="[更新：2026-06-05 11:31:48] 雖然我的工作筆電 RAM 有 32G，但平常工作要開發網頁系統前、後端，必開瀏覽器、2 個 Antigravity IDE、LibreOffice 以及常駐通訊軟體 Discord、Bottle + LINE，隨便就能吃超過 16G。 這裡面最恐怖的是瀏覽器，根本吃 RAM 怪獸…不管 Zen Browser 還是 Helium，開啟來後慢慢的從">
+<meta property="og:description" content="[更新：2026-06-08 17:57:55]  我把 &#x2F;home 也放到 BTRFS subvolume，所以…swap.img 造成建 snapshot 出錯…點我跳到解決方法  雖然我的工作筆電 RAM 有 32G，但平常工作要開發網頁系統前、後端，必開瀏覽器、2 個 Antigravity IDE、LibreOffice 以及常駐通訊軟體 Discord、Bottle + LI">
 <meta property="og:locale" content="zh_TW">
 <meta property="article:published_time" content="2026-06-06T03:31:48.000Z">
-<meta property="article:modified_time" content="2026-06-07T08:35:24.236Z">
+<meta property="article:modified_time" content="2026-06-08T10:58:40.810Z">
 <meta property="article:author" content="Kawa">
 <meta property="article:tag" content="BTRFS">
 <meta property="article:tag" content="Linux">
@@ -214,7 +214,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.5k 字
+          1.9k 字
         
       </span>
     
@@ -225,7 +225,7 @@
         
         
         
-          13 分鐘
+          16 分鐘
         
       </span>
     
@@ -267,7 +267,10 @@
             
               <div class="markdown-body">
                 
-                <p>[更新：2026-06-05 11:31:48]</p>
+                <p>[更新：2026-06-08 17:57:55]</p>
+<blockquote>
+<p>我把 &#x2F;home 也放到 BTRFS subvolume，所以…swap.img 造成建 snapshot 出錯…<a href="#%E6%8A%8A-swap-%E6%AA%94%E6%A1%88%E7%A7%BB%E5%88%B0%E6%B2%92%E6%9C%89%E5%BF%AB%E7%85%A7%E7%9A%84-subvolume">點我跳到解決方法</a></p>
+</blockquote>
 <p>雖然我的工作筆電 RAM 有 32G，但平常工作要開發網頁系統前、後端，必開瀏覽器、2 個 Antigravity IDE、LibreOffice 以及常駐通訊軟體 Discord、Bottle + LINE，隨便就能吃超過 16G。</p>
 <p>這裡面最恐怖的是瀏覽器，根本吃 RAM 怪獸…不管 Zen Browser 還是 Helium，開啟來後慢慢的從 8XX MB 吃到 2、3G，多幾個活動中分頁還直奔 5G 多…</p>
 <p>必定要開的 IDE 加上連帶要執行的 LSP Server、Dev Tools，他們一開起來也是吃了 1、2G，AI agent 再 RUN 起來也會吃 RAM；工作要發布站台，最省事是透過綁死 Windows 的 WebDeploy 三步驟無腦發布流程，這時候就要開 Winboat 進 Windows 開 VSCode 發布，而專屬 Windows 的 WinForm 程式再開 Visual Studio 來發布…同樣地，VSCode、VS 都是一開就要吃 1、2G 的 RAM。</p>
@@ -301,7 +304,14 @@
 <li>stored_pages：目前壓縮後儲存在記憶體裡的頁面數量。如果數值大於 0，代表 zswap 真的有在運作。</li>
 <li>pool_limit_hit：如果這個數值一直增加，代表 zswap 快取容量滿了，資料開始轉去硬碟的 swap.img。</li>
 </ul>
-<h2 id="BTRFS-檔案系統設定休眠及建立-swap-file-的方法"><a href="#BTRFS-檔案系統設定休眠及建立-swap-file-的方法" class="headerlink" title="BTRFS 檔案系統設定休眠及建立 swap file 的方法"></a>BTRFS 檔案系統設定休眠及建立 swap file 的方法</h2><h3 id="步驟一：建立-BTRFS-專用的-swap-File"><a href="#步驟一：建立-BTRFS-專用的-swap-File" class="headerlink" title="步驟一：建立 BTRFS 專用的 swap File"></a>步驟一：建立 BTRFS 專用的 swap File</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 建立一個大小為 0 的空檔案</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">truncate</span> -s 0 /swap.img<br><br><span class="hljs-comment"># 2. 關鍵：關閉該檔案的 CoW 屬性 (+C，停用 Copy-on-Write)</span><br><span class="hljs-built_in">sudo</span> chattr +C /swap.img<br><br><span class="hljs-comment"># 3. 正式分配 36GB 空間給該檔案</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=/swap.img bs=1M count=36864 status=progress<br><br><span class="hljs-comment"># 4. 設定權限（僅 root 可讀寫）</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> 600 /swap.img<br><br><span class="hljs-comment"># 5. 格式化為 Swap 並啟用</span><br><span class="hljs-built_in">sudo</span> mkswap /swap.img<br><span class="hljs-built_in">sudo</span> swapon /swap.img<br></code></pre></td></tr></table></figure>
+<h2 id="BTRFS-檔案系統設定休眠及建立-swap-file-的方法"><a href="#BTRFS-檔案系統設定休眠及建立-swap-file-的方法" class="headerlink" title="BTRFS 檔案系統設定休眠及建立 swap file 的方法"></a>BTRFS 檔案系統設定休眠及建立 swap file 的方法</h2><h3 id="步驟一：建立-BTRFS-專用的-swap-file"><a href="#步驟一：建立-BTRFS-專用的-swap-file" class="headerlink" title="步驟一：建立 BTRFS 專用的 swap file"></a>步驟一：建立 BTRFS 專用的 swap file</h3><p>我的 RAM 有 32G，加點冗餘量避免意外發生。<br>（純被蛇咬經驗…32*1024^3 超過 34G，加上電腦數字我偏好偶數，故取 36G）。</p>
+<ol>
+<li>用 BTRFS 指令 mkswapfile 建立一個 36G 的 swap.img，它會自動處理好 Btrfs 所有的特殊限制（關閉 CoW、不壓縮、完全連續的磁碟空間）。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> btrfs filesystem mkswapfile --size 36G /btrfs-swap/swap.img<br></code></pre></td></tr></table></figure>
+
+<p>啟用 swap file：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> swapon /swap.img<br></code></pre></td></tr></table></figure>
 
 <p>輸入 <code>swapon --show</code>，應該就能順利看到 36GB 的 &#x2F;swap.img 了。</p>
 <h3 id="步驟二：設定開機自動掛載"><a href="#步驟二：設定開機自動掛載" class="headerlink" title="步驟二：設定開機自動掛載"></a>步驟二：設定開機自動掛載</h3><p>在 &#x2F;etc&#x2F;fstab 檔案最底部加入這行：</p>
@@ -363,6 +373,44 @@
 </blockquote>
 <p>開機後，驗證休眠：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">loginctl hibernate<br></code></pre></td></tr></table></figure>
+
+<h2 id="把-swap-檔案移到沒有快照的-subvolume"><a href="#把-swap-檔案移到沒有快照的-subvolume" class="headerlink" title="把 swap 檔案移到沒有快照的 subvolume"></a>把 swap 檔案移到沒有快照的 subvolume</h2><p>我居然把 &#x2F;home 也放到 BTRFS subvolume！！放是建 snapshot 時報錯了…BTRFS 禁止對 swap file 建 snapshot。好吧…</p>
+<p>要把 &#x2F;home 移出 BTRFS subvolumes 感覺有點恐怖，所以先從最簡單的作法：把 swap file 放到新的子卷，新子卷沒設定要執行 snapshot 就不會報錯了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> swapoff /swap.img<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">rm</span> /swap.img<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面文章是用「swap.img」，依實際的檔名替換</p>
+</blockquote>
+<p>接下來就可以開始建立新 subvolume 及 swap file。</p>
+<h3 id="步驟一：掛載-root-分區以建立新-subvolume"><a href="#步驟一：掛載-root-分區以建立新-subvolume" class="headerlink" title="步驟一：掛載 root 分區以建立新 subvolume"></a>步驟一：掛載 root 分區以建立新 subvolume</h3><p>我的 root 「&#x2F;」掛在 &#x2F;dev&#x2F;nvme1n1p5，如果不知道實際的代號可以用 <code>lsblk -f</code> 查詢。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /mnt/btrfs-root<br><span class="hljs-built_in">sudo</span> mount /dev/nvme1n1p5 /mnt/btrfs-root -o subvol=/<br></code></pre></td></tr></table></figure>
+
+<p>建立一個專門給 Swap 用的 subvolume，名稱為 @swap。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> btrfs subvolume create /mnt/btrfs-root/@swap<br></code></pre></td></tr></table></figure>
+
+<p>建立完就可以卸載 root 分區了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> umount /mnt/btrfs-root<br></code></pre></td></tr></table></figure>
+
+<h3 id="步驟二：掛載新-subvolume-並建立-swap-file"><a href="#步驟二：掛載新-subvolume-並建立-swap-file" class="headerlink" title="步驟二：掛載新 subvolume 並建立 swap file"></a>步驟二：掛載新 subvolume 並建立 swap file</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /btrfs-swap<br><span class="hljs-built_in">sudo</span> mount /dev/nvme1n1p5 /btrfs-swap -o subvol=@swap,nodatacow,noatime<br><br><span class="hljs-built_in">sudo</span> btrfs filesystem mkswapfile --size 36G /btrfs-swap/swap.img<br><span class="hljs-built_in">sudo</span> swapon /btrfs-swap/swap.img<br></code></pre></td></tr></table></figure>
+
+<h3 id="步驟三：開機自動掛載新-subvolume"><a href="#步驟三：開機自動掛載新-subvolume" class="headerlink" title="步驟三：開機自動掛載新 subvolume"></a>步驟三：開機自動掛載新 subvolume</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> nano /etc/fstab<br></code></pre></td></tr></table></figure>
+
+<p>先刪掉原本最下方的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">/swap.img  none  swap  defaults  0  0<br></code></pre></td></tr></table></figure>
+
+<p>再加入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plaintext">UUID=你的UUID  /btrfs-swap  btrfs  subvol=@swap,nodatacow,noatime  0  0<br>/btrfs-swap/swap.image                     none        swap   defaults                        0  0<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>用 <code>lsblk -f</code> 可以查到 UUID。</p>
+</blockquote>
+<p>存檔離開。</p>
+<p>再次建 snapshot 就會成功了！</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> snapper create -d <span class="hljs-string">&quot;Bug fixed snapshot&quot;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>得找個長時間把 &#x2F;home 移除 subvolume，順便規劃快照 ~&#x2F;.config，或…改過的設定放到有快照的 subvolume 再 ln -s 回 .config？也許也要放到 github…</p>
+</blockquote>
 
                 
               </div>
